@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-
+from sklearn.metrics import precision_score,recall_score,f1_score,confusion_matrix
 
 df=pd.read_csv("student.csv")
 
@@ -34,6 +34,11 @@ x_train,x_test,y_train,y_test=train_test_split(X_final,y,random_state=42,test_si
 knc=KNeighborsClassifier(n_neighbors=1)
 knc.fit(x_train,y_train)
 
-print(knc.score(x_test,y_test))
+print("Test Score",knc.score(x_test,y_test))
+print("Train Score",knc.score(x_train,y_train))
+print("Precision Score",precision_score(y_test,knc.predict(x_test)))
+print("Recall Score",recall_score(y_test,knc.predict(x_test)))
+print("F1 Score",f1_score(y_test,knc.predict(x_test)))
+
 
 
