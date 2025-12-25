@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Performance Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🎓 Student Performance Prediction</h1>
+    <p class="subtitle">AI-based academic outcome analysis</p>
+
+    <form method="POST">
+        <input type="text" name="name" placeholder="Full Name" required>
+
+        <div class="grid">
+            <input type="number" name="study_hours" placeholder="Study Hours per Week" required>
+            <input type="number" name="attendance" placeholder="Attendance Rate (%)" required>
+            <input type="number" name="past_score" placeholder="Past Exam Score" required>
+            <input type="number" name="final_score" placeholder="Final Exam Score" required>
+        </div>
+
+        <div class="grid">
+            <select name="gender">
+                <option>Male</option>
+                <option>Female</option>
+            </select>
+
+            <select name="parent_edu">
+                <option>High School</option>
+                <option>Bachelor</option>
+                <option>Master</option>
+            </select>
+
+            <select name="internet">
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+
+            <select name="extra">
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+        </div>
+
+        <button type="submit">🔍 Predict Result</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result">
+            {{ prediction }}
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

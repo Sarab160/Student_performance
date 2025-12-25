@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import precision_score,recall_score,f1_score,confusion_matrix
 
-df=pd.read_csv("student.csv")
+df=pd.read_csv("student1.csv")
 
 print(df.head())
 print(df.info())
@@ -39,6 +39,3 @@ print("Train Score",knc.score(x_train,y_train))
 print("Precision Score",precision_score(y_test,knc.predict(x_test)))
 print("Recall Score",recall_score(y_test,knc.predict(x_test)))
 print("F1 Score",f1_score(y_test,knc.predict(x_test)))
-
-
-
