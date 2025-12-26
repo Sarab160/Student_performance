@@ -6,76 +6,76 @@ from sklearn.neighbors import KNeighborsClassifier
 
 app = Flask(__name__)
 
-# ================= LOAD & TRAIN MODEL =================
+# ---------- LOAD DATA ----------
 df = pd.read_csv("student1.csv")
 
-x = df[["Study_Hours_per_Week", "Attendance_Rate", "Past_Exam_Scores", "Final_Exam_Score"]]
-y = df["Pass_Fail"]
+num_cols = [
+    "Study_Hours_per_Week",
+    "Attendance_Rate",
+    "Past_Exam_Scores",
+    "Final_Exam_Score"
+]
 
-fe = df[["Gender", "Parental_Education_Level", "Internet_Access_at_Home", "Extracurricular_Activities"]]
+cat_cols = [
+    "Gender",
+    "Parental_Education_Level",
+    "Internet_Access_at_Home",
+    "Extracurricular_Activities"
+]
+
+X_num = df[num_cols]
+X_cat = df[cat_cols]
 
 ohe = OneHotEncoder(sparse_output=False, drop="first")
-encoded_array = ohe.fit_transform(fe)
-encoded_cols = ohe.get_feature_names_out(fe.columns)
-encoded_df = pd.DataFrame(encoded_array, columns=encoded_cols)
+X_cat_enc = ohe.fit_transform(X_cat)
+enc_cols = ohe.get_feature_names_out(cat_cols)
 
-X_final = pd.concat([x, encoded_df], axis=1)
+X_final = pd.concat(
+    [X_num, pd.DataFrame(X_cat_enc, columns=enc_cols)],
+    axis=1
+)
 
 le = LabelEncoder()
-y = le.fit_transform(y)
+y = le.fit_transform(df["Pass_Fail"])
 
-x_train, x_test, y_train, y_test = train_test_split(
+X_train, X_test, y_train, y_test = train_test_split(
     X_final, y, test_size=0.2, random_state=42
 )
 
 model = KNeighborsClassifier(n_neighbors=1)
-model.fit(x_train, y_train)
+model.fit(X_train, y_train)
 
-# ================= ROUTES =================
+# ---------- ROUTE ----------
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
-    name = ""
 
     if request.method == "POST":
-        name = request.form["name"]
+        name = request.form.get("name")
 
         input_data = {
-            "Study_Hours_per_Week": float(request.form["study_hours"]),
-            "Attendance_Rate": float(request.form["attendance"]),
-            "Past_Exam_Scores": float(request.form["past_score"]),
-            "Final_Exam_Score": float(request.form["final_score"]),
-            "Gender": request.form["gender"],
-            "Parental_Education_Level": request.form["parent_edu"],
-            "Internet_Access_at_Home": request.form["internet"],
-            "Extracurricular_Activities": request.form["extra"]
+            "Study_Hours_per_Week": float(request.form.get("study_hours")),
+            "Attendance_Rate": float(request.form.get("attendance")),
+            "Past_Exam_Scores": float(request.form.get("past_score")),
+            "Final_Exam_Score": float(request.form.get("final_score")),
+            "Gender": request.form.get("gender"),
+            "Parental_Education_Level": request.form.get("parent_edu"),
+            "Internet_Access_at_Home": request.form.get("internet"),
+            "Extracurricular_Activities": request.form.get("extra")
         }
 
         input_df = pd.DataFrame([input_data])
 
-        encoded_input = ohe.transform(
-            input_df[["Gender", "Parental_Education_Level",
-                      "Internet_Access_at_Home", "Extracurricular_Activities"]]
-        )
+        num_part = input_df[num_cols]
+        cat_part = ohe.transform(input_df[cat_cols])
+        cat_df = pd.DataFrame(cat_part, columns=enc_cols)
 
-        encoded_input_df = pd.DataFrame(
-            encoded_input,
-            columns=ohe.get_feature_names_out()
-        )
-
-        final_input = pd.concat([
-            input_df[["Study_Hours_per_Week", "Attendance_Rate",
-                      "Past_Exam_Scores", "Final_Exam_Score"]],
-            encoded_input_df
-        ], axis=1)
+        final_input = pd.concat([num_part, cat_df], axis=1)
 
         result = model.predict(final_input)[0]
-        label = le.inverse_transform([result])[0]
+        result_label = le.inverse_transform([result])[0]
 
-        if label.lower() == "fail":
-            prediction = f"{name}, you might fail in upcoming exams due to your performance."
-        else:
-            prediction = f"{name}, you are likely to pass. Keep up the good work!"
+        prediction = f"{name}, based on your performance you might {result_label.upper()} the exam."
 
     return render_template("index.html", prediction=prediction)
 

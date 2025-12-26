@@ -1,58 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Student Performance Predictor</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <title>Fledge | Student Performance Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<div class="container">
-    <h1>🎓 Student Performance Prediction</h1>
-    <p class="subtitle">AI-based academic outcome analysis</p>
+<body class="bg-amber-50 font-sans min-h-screen">
 
-    <form method="POST">
-        <input type="text" name="name" placeholder="Full Name" required>
+  <!-- NAVBAR -->
+  <nav class="bg-white h-16 shadow-md flex items-center">
+    <div class="max-w-6xl mx-auto px-4 flex items-center gap-4">
+      <img src="/static/logo.png" class="h-10" alt="Fledge Logo">
+      <h1 class="text-xl font-bold text-slate-800">
+        Fledge — Smart Quiz & Prediction System
+      </h1>
+    </div>
+  </nav>
 
-        <div class="grid">
-            <input type="number" name="study_hours" placeholder="Study Hours per Week" required>
-            <input type="number" name="attendance" placeholder="Attendance Rate (%)" required>
-            <input type="number" name="past_score" placeholder="Past Exam Score" required>
-            <input type="number" name="final_score" placeholder="Final Exam Score" required>
-        </div>
+  <!-- HERO -->
+  <section class="text-center py-12">
+    <h2 class="text-4xl font-extrabold text-slate-900 mb-4">
+      Student Performance Prediction
+    </h2>
+    <p class="text-slate-600 max-w-2xl mx-auto">
+      Enter student academic and personal details to predict whether the student
+      is likely to <span class="font-semibold">PASS</span> or <span class="font-semibold">FAIL</span>.
+    </p>
+  </section>
 
-        <div class="grid">
-            <select name="gender">
-                <option>Male</option>
-                <option>Female</option>
-            </select>
+  <!-- FORM SECTION -->
+  <section class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl mb-16">
 
-            <select name="parent_edu">
-                <option>High School</option>
-                <option>Bachelor</option>
-                <option>Master</option>
-            </select>
+    <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <select name="internet">
-                <option>Yes</option>
-                <option>No</option>
-            </select>
+      <!-- Name -->
+      <div class="md:col-span-2">
+        <label class="block font-semibold mb-1">Student Name</label>
+        <input name="name" required
+          class="w-full px-4 py-3 border rounded-xl"
+          placeholder="Enter full name">
+      </div>
 
-            <select name="extra">
-                <option>Yes</option>
-                <option>No</option>
-            </select>
-        </div>
+      <div>
+        <label class="block font-semibold mb-1">Study Hours per Week</label>
+        <input type="number" step="any" name="study_hours" required
+          class="w-full px-4 py-3 border rounded-xl">
+      </div>
 
-        <button type="submit">🔍 Predict Result</button>
+      <div>
+        <label class="block font-semibold mb-1">Attendance Rate (%)</label>
+        <input type="number" step="any" name="attendance" required
+          class="w-full px-4 py-3 border rounded-xl">
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Past Exam Score</label>
+        <input type="number" step="any" name="past_score" required
+          class="w-full px-4 py-3 border rounded-xl">
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Final Exam Score</label>
+        <input type="number" step="any" name="final_score" required
+          class="w-full px-4 py-3 border rounded-xl">
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Gender</label>
+        <select name="gender" class="w-full px-4 py-3 border rounded-xl">
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Parental Education</label>
+        <select name="parent_edu" class="w-full px-4 py-3 border rounded-xl">
+          <option>High School</option>
+          <option>Bachelor</option>
+          <option>Master</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Internet Access at Home</label>
+        <select name="internet" class="w-full px-4 py-3 border rounded-xl">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Extracurricular Activities</label>
+        <select name="extra" class="w-full px-4 py-3 border rounded-xl">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div class="md:col-span-2">
+        <button
+          class="w-full bg-amber-500 text-white py-4 rounded-xl text-lg font-semibold hover:bg-amber-600">
+          Predict Result
+        </button>
+      </div>
+
     </form>
 
     {% if prediction %}
-        <div class="result">
-            {{ prediction }}
-        </div>
+    <div class="mt-6 bg-emerald-100 text-emerald-800 p-4 rounded-xl text-center font-semibold">
+      {{ prediction }}
+    </div>
     {% endif %}
-</div>
+
+  </section>
 
 </body>
 </html>
